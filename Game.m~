@@ -4,7 +4,7 @@ classdef Game < handle
         
     properties
 %         num_conversations = 5;     % how many folks will a participant talk to in a week?
-        p_convert = 0;            % how likely is someone to convert an uninitiated person?
+        p_convert = 0.1;            % how likely is someone to convert an uninitiated person?
         phi = 0;                  % tree array
         i = 0;                      % number of participants
         num_weeks = 7;              % number of weeks
@@ -14,8 +14,7 @@ classdef Game < handle
     
     methods
         
-        function obj = Game(p)
-           obj.p_convert = p;
+        function obj = Game
            was = Participant(0,1);
            obj.folks = {was};
         end
@@ -23,7 +22,7 @@ classdef Game < handle
         function recruit(o, iWeek) 
            for iParticipant = 1:length(o.folks)
             p1 = o.folks{iParticipant};
-            disp([num2str(p1.index) ' has ' num2str(p1.NumConversations(iWeek)) ' in week ' num2str(iWeek)]);
+            disp(p1.index ' has ' 
             for iC = 1:p1.NumConversations(iWeek)
                if rand < o.p_convert
                   o.i = o.i + 1;

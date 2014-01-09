@@ -1,10 +1,10 @@
-function g = telex_sim
+function g = telex_sim(prob)
 
-g = Game;
+g = Game(prob);
 
 % last_side = -1;             % start building tree on the left
 
-for iWeek = 1:5
+for iWeek = 1:12
   disp(['*********** Week: ' num2str(iWeek) ' ************* ']);
   g.recruit(iWeek);
 %   g.collect;

@@ -14,8 +14,9 @@ classdef Participant < handle
     end
     
     methods
-        function p = Participant(index)
+        function p = Participant(index, iWeek)
             p.index = index;
+            p.start_week = iWeek;
 %             p.side = side;
         end
         
@@ -25,6 +26,16 @@ classdef Participant < handle
            this_obj.downstream_count = this_obj.downstream_count + 1;
 %            index = (1/2)* side + 1/2+1;
 %            this_obj.side_sums(index) = this_obj.side_sums(index) + 1;
+        end
+        
+        function conversations = NumConversations(p, iWeek)
+           % the zealous new convert
+           weeks = iWeek - p.start_week;
+           if weeks > 6
+               conversations = 0;
+           else
+               conversations = 6 - weeks;
+           end
         end
     end
     
