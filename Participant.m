@@ -3,12 +3,13 @@ classdef Participant < handle
     %   Detailed explanation goes here
     
     properties
-        income
+        wealth = 0;
         recruits = {};
         upstream = [];
         index = 0;
         downstream_count = 0;
         start_week = 0;
+        memberships = 1;
 %         side = 0; % -1 = left; 1 = right; 0 = master
 %         side_sums = [0 0];          % how many are on each side? (rows are levels col1 = left)
     end
@@ -32,7 +33,7 @@ classdef Participant < handle
            % the zealous new convert
            weeks = iWeek - p.start_week;
            if weeks > 6
-               conversations = 0;
+               conversations = 1;
            else
                conversations = 6 - weeks;
            end

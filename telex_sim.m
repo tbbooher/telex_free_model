@@ -1,15 +1,21 @@
-function g = telex_sim(prob)
+function g = telex_sim(prob, weeks)
+
+close all;
 
 g = Game(prob);
 
 % last_side = -1;             % start building tree on the left
 
-for iWeek = 1:12
+for iWeek = 1:weeks
   disp(['*********** Week: ' num2str(iWeek) ' ************* ']);
+  if iWeek > 10 && g.boss_wealth/(g.n*20) < 5
+    break;
+  end
   g.recruit(iWeek);
-%   g.collect;
+  g.collect(iWeek);
 %   g.sell;
 end
+g.report;
 
 disp(['Total Recruits ' num2str(g.i)]);
 
