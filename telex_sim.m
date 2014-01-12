@@ -1,8 +1,9 @@
-function g = telex_sim(prob, weeks)
+function [boss_wealth, g] = telex_sim(prob, weeks)
 
 close all;
 
 g = Game(prob);
+boss_wealth = zeros(1,weeks);
 
 % last_side = -1;             % start building tree on the left
 
@@ -13,6 +14,7 @@ for iWeek = 1:weeks
   end
   g.recruit(iWeek);
   g.collect(iWeek);
+  boss_wealth(iWeek) = g.boss_wealth;
 %   g.sell;
 end
 g.report;

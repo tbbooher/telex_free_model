@@ -10,14 +10,19 @@ classdef Participant < handle
         downstream_count = 0;
         start_week = 0;
         memberships = 1;
+        zealot = false;
 %         side = 0; % -1 = left; 1 = right; 0 = master
 %         side_sums = [0 0];          % how many are on each side? (rows are levels col1 = left)
     end
     
     methods
-        function p = Participant(index, iWeek)
+        function p = Participant(index, iWeek, zealot)
             p.index = index;
             p.start_week = iWeek;
+            p.zealot = zealot;
+            if zealot
+              p.memberships = 5;
+            end
 %             p.side = side;
         end
         
@@ -32,10 +37,14 @@ classdef Participant < handle
         function conversations = NumConversations(p, iWeek)
            % the zealous new convert
            weeks = iWeek - p.start_week;
-           if weeks > 6
-               conversations = 1;
+           if p.zealot
+               if weeks > 6
+                   conversations = 1;
+               else
+                   conversations = 6 - weeks;
+               end
            else
-               conversations = 6 - weeks;
+               conversations = double((rand > 0.8));
            end
         end
     end

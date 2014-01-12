@@ -18,7 +18,7 @@ classdef Game < handle
         
         function obj = Game(p)
            obj.p_convert = p;
-           was = Participant(0,1);
+           was = Participant(0,1, true);
            obj.folks = {was};
         end
         
@@ -27,12 +27,12 @@ classdef Game < handle
             p1 = o.folks{iParticipant};
 %             disp([num2str(p1.index) ' has ' num2str(p1.NumConversations(iWeek)) ' in week ' num2str(iWeek)]);
             for iC = 1:p1.NumConversations(iWeek)
-               if rand < o.p_convert && o.n < 500
+               if rand < o.p_convert && o.n < 5000
                   o.n = o.n + 1;
                   o.i = o.i + 1;
                   % [last_side] = find_side(p1.side);
 %                   disp(['adding participant: ' num2str(o.i)]);
-                  p = Participant(o.i, iWeek);
+                  p = Participant(o.i, iWeek, (rand < 0.1));
                   o.folks{1+ end} = p;
                   p1.add_recruit(p);
                   o.phi(p.index+1) = p1.index+1;
@@ -65,11 +65,19 @@ classdef Game < handle
             % adcentral payments
             switch weeks
                 case 0
-                    g.transfer(p, 300);
-                case 1
+                    if p.zealot
+                      g.transfer(p, 1375);
+                    else
+                      g.transfer(p, 289);  
+                    end
+                case {1,2}
                     % nothing happens here -- you don't get paid
                 otherwise
-                    g.transfer(p, -20);                
+                    if p.zealot                        
+                       g.transfer(p, -100*p.memberships);
+                    else
+                       g.transfer(p, -20*p.memberships); 
+                    end                        
             end            
         end % ad_central
         
@@ -81,14 +89,19 @@ classdef Game < handle
         
         function report(g)
            figure;
-           n = numel(g.folks);
-           g.participants_wealth = zeros(1,n);
-           for k = 1:n
+           subplot(2,1,1);
+           treeplot(g.phi);
+%            n = numel(g.folks);
+           subplot(2,1,2);
+           g.participants_wealth = zeros(1,g.n);
+           for k = 1:g.n
              g.participants_wealth(k) = g.folks{k}.wealth;
            end % i
-           bar(g.participants_wealth);
+           hb = bar(g.participants_wealth);
+           set(get(hb,'children'),'cdata', sign(g.participants_wealth) );
+           colormap([1 0 0; 0 0 1]); % red & blue in rgb
            winners = numel(g.participants_wealth(g.participants_wealth>0));
-           losers = n - winners;
+           losers = g.n - winners;
            title(['Boss: ' num2str(g.boss_wealth) ' winners: ' num2str(winners) ' losers: ' num2str(losers)]);
         end
     end
