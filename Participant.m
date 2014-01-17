@@ -5,6 +5,7 @@ classdef Participant < handle
     properties
         wealth = 0;
         recruits = {};
+        recruited = []; % array of how many were recruited in each iteration
         upstream = [];
         index = 0;
         downstream_count = 0;
@@ -21,7 +22,7 @@ classdef Participant < handle
             p.start_week = iWeek;
             p.zealot = zealot;
             if zealot
-              p.memberships = 5;
+              p.memberships = 1;
             end
 %             p.side = side;
         end

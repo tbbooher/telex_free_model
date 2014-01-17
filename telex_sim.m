@@ -1,4 +1,4 @@
-function [boss_wealth, g] = telex_sim(prob, weeks)
+function g = telex_sim(prob, weeks)
 
 close all;
 
@@ -14,7 +14,7 @@ for iWeek = 1:weeks
   end
   g.recruit(iWeek);
   g.collect(iWeek);
-  boss_wealth(iWeek) = g.boss_wealth;
+  g.boss_wealth_array(iWeek) = g.boss_wealth;
 %   g.sell;
 end
 g.report;

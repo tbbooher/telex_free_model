@@ -10,6 +10,7 @@ classdef Game < handle
         num_weeks = 7;              % number of weeks
         folks = {};
         boss_wealth = 0;
+        boss_wealth_array = [];
         participants_wealth = [];
         n = 1;                     % total participants
     end
@@ -25,6 +26,7 @@ classdef Game < handle
         function recruit(o, iWeek) 
            for iParticipant = 1:length(o.folks)
             p1 = o.folks{iParticipant};
+            p1.recruited(iWeek) = 0;
 %             disp([num2str(p1.index) ' has ' num2str(p1.NumConversations(iWeek)) ' in week ' num2str(iWeek)]);
             for iC = 1:p1.NumConversations(iWeek)
                if rand < o.p_convert && o.n < 5000
@@ -37,6 +39,7 @@ classdef Game < handle
                   p1.add_recruit(p);
                   o.phi(p.index+1) = p1.index+1;
                   treeplot(o.phi);
+                  p1.recruited(iWeek) = p1.recruited(iWeek) + 1;
 %                   disp(['Person ' num2str(p1.index) ' has recruited person ' num2str(p.index)]);
 %                   pause;
                end % convert
@@ -51,11 +54,12 @@ classdef Game < handle
             weeks = iWeek - p.start_week;
             g.ad_central(p, weeks);
             g.members(p);
-%             g.binary_bonus;
+            g.binary_bonus(p, weeks);
           end % iF
         end % collect
         
         function members(g, p)
+            % max payment of 3000 
             payout = min(p.downstream_count*0.4, 3000);
             g.transfer(p, -payout);
 %             disp([' **** %%%% **** downstream ' num2str(p.downstream_count)]);
@@ -87,12 +91,27 @@ classdef Game < handle
            p.wealth = p.wealth - amount; 
         end
         
+        function binary_bonus(g, p, weeks)
+            % if user has at least one new recruit
+            % and he has a binary number of followers
+            l = length(p.recruits);
+            switch weeks
+                case 0
+                    new_recruits = numel(p.recruited);
+                otherwise
+                    new_recruits = p.recruited(weeks+1) - p.recruited(weeks);
+            end
+            if (new_recruits > 0) && mod(l,2) == 0
+                g.transfer(p,-20*new_recruits);
+            end
+        end
+        
         function report(g)
            figure;
-           subplot(2,1,1);
+           subplot(3,1,1);
            treeplot(g.phi);
 %            n = numel(g.folks);
-           subplot(2,1,2);
+           subplot(3,1,2);
            g.participants_wealth = zeros(1,g.n);
            for k = 1:g.n
              g.participants_wealth(k) = g.folks{k}.wealth;
@@ -103,6 +122,8 @@ classdef Game < handle
            winners = numel(g.participants_wealth(g.participants_wealth>0));
            losers = g.n - winners;
            title(['Boss: ' num2str(g.boss_wealth) ' winners: ' num2str(winners) ' losers: ' num2str(losers)]);
+           subplot(3,1,3);
+           plot(g.boss_wealth_array);
         end
     end
     
